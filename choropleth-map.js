@@ -22,9 +22,10 @@
     svg.selectAll("path")
       .data(geojson.features)
       .enter().append("path")
-      .attr("d", path);
+      .attr("d", path)
+      .attr("class", "county");
 
-    //$("#map").text(JSON.stringify(json));
+    $("#map").text(JSON.stringify(json));
   }
 })();
 
@@ -34,3 +35,11 @@ const educ = {
   "area_name": "Autauga County",
   "bachelorsOrHigher": 21.9
 }
+
+const county = {
+    "type": "Polygon",
+    "id": 1001,
+    "arcs": [
+      [-6732, -6727, -4931, 8710, -4933]
+    ]
+  },
