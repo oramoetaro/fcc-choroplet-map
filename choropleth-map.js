@@ -2,9 +2,10 @@
   const educUrl = "https://raw.githubusercontent.com/no-stack-dub-sack/testable-projects-fcc/master/src/data/choropleth_map/for_user_education.json";
   const countiesJsonUrl = "https://raw.githubusercontent.com/no-stack-dub-sack/testable-projects-fcc/master/src/data/choropleth_map/counties.json";
 
+  const scheme = ["#1c64ae", "#3f92c5", "#90c5df", "#d1e5f1", "#fedbc6", "#f6a57e", "#d85f48", "#b41427"];
+
   const width = $("#map").width();
   const height = 600;
-  const path = d3.geoPath();
 
   const xhttp = new XMLHttpRequest();
   xhttp.open("GET", countiesJsonUrl, true);
@@ -22,10 +23,10 @@
     svg.selectAll("path")
       .data(geojson.features)
       .enter().append("path")
-      .attr("d", path)
+      .attr("d", d3.geoPath())
       .attr("class", "county");
 
-    $("#map").text(JSON.stringify(json));
+    //$("#map").text(JSON.stringify(geojson.features));
   }
 })();
 
@@ -42,4 +43,4 @@ const county = {
     "arcs": [
       [-6732, -6727, -4931, 8710, -4933]
     ]
-  },
+  }
