@@ -2,10 +2,27 @@
   const educUrl = "https://raw.githubusercontent.com/no-stack-dub-sack/testable-projects-fcc/master/src/data/choropleth_map/for_user_education.json";
   const countiesJsonUrl = "https://raw.githubusercontent.com/no-stack-dub-sack/testable-projects-fcc/master/src/data/choropleth_map/counties.json";
 
-  const scheme = ["#1c64ae", "#3f92c5", "#90c5df", "#d1e5f1", "#fedbc6", "#f6a57e", "#d85f48", "#b41427"];
-
+  let [min, max] = "";
   const width = $("#map").width();
   const height = 600;
+
+  function getEduJson(callback) {
+    d3.json(educUrl, function (json) {
+      callback(json)
+    });
+  };
+
+  getEduJson(function (json) {
+    d3.json(countiesJsonUrl, function (json) {
+      min = d3.min(json, (d) => d.bachelorsOrHigher);
+      max = d3.max(json, (d) => d.bachelorsOrHigher);
+    });
+  });
+
+  function imprime() {
+    console.log(min);
+    console.log(max);
+  }
 
   const xhttp = new XMLHttpRequest();
   xhttp.open("GET", countiesJsonUrl, true);
@@ -38,9 +55,9 @@ const educ = {
 }
 
 const county = {
-    "type": "Polygon",
-    "id": 1001,
-    "arcs": [
-      [-6732, -6727, -4931, 8710, -4933]
-    ]
-  }
+  "type": "Polygon",
+  "id": 1001,
+  "arcs": [
+    [-6732, -6727, -4931, 8710, -4933]
+  ]
+}
