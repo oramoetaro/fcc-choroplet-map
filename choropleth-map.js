@@ -37,8 +37,10 @@
         .attr("class", "county")
         .attr("stroke", "white")
         .attr("stroke-width", 0.5)
-        .attr("onmouseover", "tooltip(this)")
-        .attr("onmouseout", "$('#tooltip').hide()")
+        .attr("onmouseover", d => {
+          const a = eduJson.find(e => e.fips == d.id);
+          return `tooltip(${a.bachelorsOrHigher},'${a.area_name}')`;
+        })
         .attr("fill", (d) => color(
           eduJson.find(
             (e) => e.fips == d.id)
@@ -51,13 +53,12 @@
     });
   });
 
-  function tooltip () {
-    
-  }
-
-
-
 })();
+
+function tooltip (percent, name) {
+  shortName = name.replace(/ County/g, '');
+  $("#tooltip").text(`${shortName}: ${percent} %`);
+}
 
 const educ = {
   "fips": 1001,
