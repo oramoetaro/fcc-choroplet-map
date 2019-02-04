@@ -7,44 +7,39 @@
   const height = 600;
 
   function getEduJson(callback) {
-    d3.json(educUrl, function (json) {
-      callback(json)
+    d3.json(educUrl, function (eduJson) {
+      callback(eduJson)
     });
   };
 
-  getEduJson(function (json) {
-    d3.json(countiesJsonUrl, function (json) {
-      min = d3.min(json, (d) => d.bachelorsOrHigher);
-      max = d3.max(json, (d) => d.bachelorsOrHigher);
+  getEduJson(function (eduJson) {
+    d3.json(countiesJsonUrl, function (counties) {
+      min = d3.min(eduJson, (d) => d.bachelorsOrHigher);
+      max = d3.max(eduJson, (d) => d.bachelorsOrHigher);
+
+      const color = d3.scaleQuantize()
+        .domain([min, max])
+        .range(d3.schemeBlues[9]);
+
+      const svg = d3.select("#map")
+        .append("svg")
+        .attr("width", width)
+        .attr("height", height);
+
+      const geojson = topojson.feature(counties, counties.objects.counties);
+
+      svg.selectAll("path")
+        .data(geojson.features)
+        .enter().append("path")
+        .attr("d", d3.geoPath())
+        .attr("class", "county")
+        .attr("fill", (d) => color(eduJson.find((e) => e.fips == d.id).bachelorsOrHigher));
+
+      //$("#map").text(JSON.stringify(geojson.features));
+      //$("#map").text(JSON.stringify(eduJson));
+
     });
   });
-
-  function imprime() {
-    console.log(min);
-    console.log(max);
-  }
-
-  const xhttp = new XMLHttpRequest();
-  xhttp.open("GET", countiesJsonUrl, true);
-  xhttp.send();
-  xhttp.onload = function () {
-
-    const json = JSON.parse(xhttp.responseText);
-
-    const svg = d3.select("#map").append("svg")
-      .attr("width", width)
-      .attr("height", height);
-
-    const geojson = topojson.feature(json, json.objects.counties);
-
-    svg.selectAll("path")
-      .data(geojson.features)
-      .enter().append("path")
-      .attr("d", d3.geoPath())
-      .attr("class", "county");
-
-    //$("#map").text(JSON.stringify(geojson.features));
-  }
 })();
 
 const educ = {
