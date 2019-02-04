@@ -3,8 +3,7 @@
   const countiesJsonUrl = "https://raw.githubusercontent.com/no-stack-dub-sack/testable-projects-fcc/master/src/data/choropleth_map/counties.json";
 
   let [min, max] = "";
-  const width = $("#map").width();
-  const height = 600;
+  const [width, height] = [950, 600];
 
   function getEduJson(callback) {
     d3.json(educUrl, function (eduJson) {
@@ -26,20 +25,38 @@
         .attr("width", width)
         .attr("height", height);
 
-      const geojson = topojson.feature(counties, counties.objects.counties);
+      const geojson = topojson.feature(
+        counties,
+        counties.objects.counties
+        );
 
       svg.selectAll("path")
         .data(geojson.features)
         .enter().append("path")
         .attr("d", d3.geoPath())
         .attr("class", "county")
-        .attr("fill", (d) => color(eduJson.find((e) => e.fips == d.id).bachelorsOrHigher));
+        .attr("stroke", "white")
+        .attr("stroke-width", 0.5)
+        .attr("onmouseover", "tooltip(this)")
+        .attr("onmouseout", "$('#tooltip').hide()")
+        .attr("fill", (d) => color(
+          eduJson.find(
+            (e) => e.fips == d.id)
+          .bachelorsOrHigher
+        ));
 
       //$("#map").text(JSON.stringify(geojson.features));
       //$("#map").text(JSON.stringify(eduJson));
 
     });
   });
+
+  function tooltip () {
+    
+  }
+
+
+
 })();
 
 const educ = {
