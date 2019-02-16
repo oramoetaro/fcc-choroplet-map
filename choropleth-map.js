@@ -25,10 +25,28 @@
         .attr("width", width)
         .attr("height", height);
 
+      const legend = g => {
+        const x = d3.scaleLinear()
+          .domain(d3.extent(color.domain()))
+          .rangeRound([0, 260]);
+
+        g.selectAll("rect")
+          .data(color.range().map(d => color.invertExtent(d)))
+          .enter().append("rect")
+          .attr("height", 8)
+          .attr("x", d => x(d[1]) - x(d[0]))
+          .attr("fill", d => color(d[0]));
+      }
+
       const geojson = topojson.feature(
         counties,
         counties.objects.counties
-        );
+      );
+
+      svg.append("g")
+        .attr("id", "legend")
+        .attr("transform", "translate(200,200)")
+        .call(legend);
 
       svg.selectAll("path")
         .data(geojson.features)
@@ -41,23 +59,20 @@
           const a = eduJson.find(e => e.fips == d.id);
           return `tooltip(${a.bachelorsOrHigher},'${a.area_name}')`;
         })
+        .attr("onmouseout", "$('#tooltip').hide()")
         .attr("fill", (d) => color(
           eduJson.find(
             (e) => e.fips == d.id)
           .bachelorsOrHigher
         ));
-
-      //$("#map").text(JSON.stringify(geojson.features));
-      //$("#map").text(JSON.stringify(eduJson));
-
     });
   });
 
 })();
 
-function tooltip (percent, name) {
+function tooltip(percent, name) {
   shortName = name.replace(/ County/g, '');
-  $("#tooltip").text(`${shortName}: ${percent} %`);
+  $("#tooltip").text(`${shortName}: ${percent} %`).show();
 }
 
 const educ = {
