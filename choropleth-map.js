@@ -57,20 +57,22 @@
         .attr("stroke-width", 0.5)
         .attr("data-toggle", "tooltip")
         .attr("data-placement", "right")
-        .attr("title", d => {
-          const a = eduJson.find(e => e.fips == d.id);
-          return a.area_name.replace(/ County/g, "-") +
-          a.state + ": " + a.bachelorsOrHigher + " %";
-        })
         .attr("onmouseover", "$(this).tooltip('show')")
-        .attr("fill", (d) => color(
-          eduJson.find(
-            (e) => e.fips == d.id)
-          .bachelorsOrHigher
-        ));
+        .attrs({
+          "data-fips": d =>
+            eduJson.find(e => e.fips == d.id).fips,
+          "data-education": d =>
+            eduJson.find(e => e.fips == d.id).bachelorsOrHigher,
+          "fill": d => color(
+            eduJson.find(e => e.fips == d.id).bachelorsOrHigher),
+          "title": d => {
+            const a = eduJson.find(e => e.fips == d.id);
+            return a.area_name.replace(/ County/g, "-") +
+            a.state + ": " + a.bachelorsOrHigher + " %";
+          }
+        })
     });
   });
-
 })();
 
 (function () {
