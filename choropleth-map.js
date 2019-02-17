@@ -25,6 +25,37 @@
         .attr("width", width)
         .attr("height", height);
 
+      const geojson = topojson.feature(
+        counties,
+        counties.objects.counties
+      );
+
+      svg.selectAll("path")
+        .data(geojson.features)
+        .enter().append("path")
+        .attrs({
+          "d": d3.geoPath(),
+          "class": "county",
+          "stroke": "white",
+          "stroke-width": 0.5,
+          "data-toggle": "tooltip",
+          "data-placement": "right",
+          "onmouseover": "$(this).tooltip('show')"
+        })
+
+      svg.selectAll("path").each(function (d) {
+        const a = eduJson.find(e => e.fips == d.id);
+        d3.select(this).attrs({
+          "data-fips": a.fips,
+          "data-education": a.bachelorsOrHigher,
+          "fill": color(a.bachelorsOrHigher),
+          "title": d => {
+            return a.area_name.replace(/ County/g, " ") +
+              a.state + ": " + a.bachelorsOrHigher + " %";
+          }
+        });
+      });
+
       const legend = g => {
         const x = d3.scaleLinear()
           .domain(d3.extent(color.domain()))
@@ -38,39 +69,11 @@
           .attr("fill", d => color(d[0]));
       }
 
-      const geojson = topojson.feature(
-        counties,
-        counties.objects.counties
-      );
-
       svg.append("g")
         .attr("id", "legend")
         .attr("transform", "translate(200,200)")
         .call(legend);
 
-      svg.selectAll("path")
-        .data(geojson.features)
-        .enter().append("path")
-        .attr("d", d3.geoPath())
-        .attr("class", "county")
-        .attr("stroke", "white")
-        .attr("stroke-width", 0.5)
-        .attr("data-toggle", "tooltip")
-        .attr("data-placement", "right")
-        .attr("onmouseover", "$(this).tooltip('show')")
-        .attrs({
-          "data-fips": d =>
-            eduJson.find(e => e.fips == d.id).fips,
-          "data-education": d =>
-            eduJson.find(e => e.fips == d.id).bachelorsOrHigher,
-          "fill": d => color(
-            eduJson.find(e => e.fips == d.id).bachelorsOrHigher),
-          "title": d => {
-            const a = eduJson.find(e => e.fips == d.id);
-            return a.area_name.replace(/ County/g, "-") +
-            a.state + ": " + a.bachelorsOrHigher + " %";
-          }
-        })
     });
   });
 })();
