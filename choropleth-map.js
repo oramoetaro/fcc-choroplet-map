@@ -56,7 +56,7 @@
         });
       });
 
-      // The legend
+      // Inserting the legend
 
       const [lWidth, lHeight] = [500, 15];
 
@@ -78,6 +78,10 @@
     });
   });
 })();
+
+//--------------------------------
+// Initializing Bootstrap Tooltips
+//--------------------------------
 
 (function () {
   $('[data-toggle="tooltip"]').tooltip();
