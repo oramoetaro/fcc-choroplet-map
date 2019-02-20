@@ -57,19 +57,19 @@
 
       // Inserting the legend
 
-      const [lWidth, lHeight] = [500, 15];
+      const [lWidth, lHeight, hPadding] = [300, 15, 15];
       const legend = d3.select("#legend")
         .append("svg").attr("height", lHeight + 25);
       const lScale = d3.scaleLinear()
         .domain([min, max])
-        .range([0, lWidth]);
+        .range([0 + hPadding, lWidth - hPadding]);
 
       legend.selectAll("rect")
         .data(color.range().map(d => color.invertExtent(d)))
         .enter().append("rect")
         .attr("height", lHeight)
-        .attr("width", d => lScale(d[1] - d[0]))
-        .attr("x", (d, i) => lScale(d[1] - d[0]) * i)
+        .attr("width", d => lScale(d[1]) - lScale(d[0]))
+        .attr("x", (d, i) => (lScale(d[1]) - lScale(d[0])) * i + hPadding)
         .attr("fill", d => color(d[0]));
 
       console.log(min + " " + max);
@@ -78,7 +78,11 @@
       console.log(color.range().map(d => color.invertExtent(d)[0]));
 
       const xAxis = d3.axisBottom(lScale)
-        .tickValues(color.range().map(d => color.invertExtent(d)[0]))
+        .tickValues(
+          color.range().map(
+            d => color.invertExtent(d)[0]
+          )
+        )
         .tickFormat(d3.format(",.1f"))
 
       legend.append("g")
