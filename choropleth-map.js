@@ -15,7 +15,6 @@
     d3.json(countiesJsonUrl, function (counties) {
       min = d3.min(eduJson, (d) => d.bachelorsOrHigher);
       max = d3.max(eduJson, (d) => d.bachelorsOrHigher);
-      const format = d3.format("");
 
       const color = d3.scaleQuantize()
         .domain([min, max])
@@ -59,13 +58,11 @@
       // Inserting the legend
 
       const [lWidth, lHeight] = [500, 15];
-
+      const legend = d3.select("#legend")
+        .append("svg").attr("height", lHeight + 25);
       const lScale = d3.scaleLinear()
         .domain([min, max])
         .range([0, lWidth]);
-
-      const legend = d3.select("#legend")
-        .append("svg").attr("height", lHeight + 10);
 
       legend.selectAll("rect")
         .data(color.range().map(d => color.invertExtent(d)))
@@ -74,6 +71,19 @@
         .attr("width", d => lScale(d[1] - d[0]))
         .attr("x", (d, i) => lScale(d[1] - d[0]) * i)
         .attr("fill", d => color(d[0]));
+
+      console.log(min + " " + max);
+      console.log(color.range());
+      console.log(color.range().map(d => color.invertExtent(d)));
+      console.log(color.range().map(d => color.invertExtent(d)[0]));
+
+      const xAxis = d3.axisBottom(lScale)
+        .tickValues(color.range().map(d => color.invertExtent(d)[0]))
+        .tickFormat(d3.format(",.1f"))
+
+      legend.append("g")
+        .attr("transform", "translate(0," + lHeight + ")")
+        .call(xAxis);
 
     });
   });
