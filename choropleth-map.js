@@ -72,11 +72,6 @@
         .attr("x", (d, i) => (lScale(d[1]) - lScale(d[0])) * i + hPadding)
         .attr("fill", d => color(d[0]));
 
-      console.log(min + " " + max);
-      console.log(color.range());
-      console.log(color.range().map(d => color.invertExtent(d)));
-      console.log(color.range().map(d => color.invertExtent(d)[0]));
-
       const xAxis = d3.axisBottom(lScale)
         .tickValues(
           color.range().map(
